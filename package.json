@@ -1,0 +1,9 @@
+{
+  "name": "webpack_0620",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "webpack": "^4.41.0"
+  }
+}
