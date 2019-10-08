@@ -26,6 +26,7 @@ module.exports = {
   module: {
     //所有的loader都要配置在这里,loader下载后直接声明使用即可，无需引入。
     rules: [
+      //编译less
       {
         test: /\.less$/,//匹配所有.less文件
         //use里的多个loader，“干活”的顺序是：从右到左的顺序
@@ -34,6 +35,39 @@ module.exports = {
           'css-loader', // 将css翻译成一个CommonJs的模块
           'less-loader' // 将less转换为css
         ]
+      },
+      //使用eslint检查js语法
+      {
+        test: /\.js$/,  //匹配js文件
+        exclude: /node_modules/,  //排除node_modules文件夹
+        enforce: "pre",  //提前加载使用
+        use: { //使用eslint-loader去检查
+          loader: "eslint-loader"
+        }
+      },
+      //使用babel-loader解析es6语法，但是只能解析一些简单的，例如Promise就不能翻译
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  useBuiltIns: 'usage',  // 按需引入需要使用polyfill
+                  corejs: { version: 3 }, // 解决warn
+                  targets: { // 指定兼容性处理哪些浏览器
+                    "chrome": "75",
+                    "ie": "11",
+                  }
+                }
+              ]
+            ],
+            cacheDirectory: true, // 开启babel缓存
+          }
+        }
       },
     ]
   }

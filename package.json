@@ -4,10 +4,37 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/polyfill": "^7.6.0",
+    "@babel/preset-env": "^7.6.2",
+    "babel-loader": "^8.0.6",
+    "core-js": "^3.2.1",
     "css-loader": "^3.2.0",
+    "eslint": "^6.5.1",
+    "eslint-loader": "^3.0.2",
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "style-loader": "^1.0.0",
     "webpack": "^4.41.0"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "$": "readonly",
+      "Promise": "readonly"
+    },
+    "rules": {
+      "no-console": 0,
+      "eqeqeq": 2,
+      "no-alert": 2
+    },
+    "extends": "eslint:recommended"
   }
 }
