@@ -8,6 +8,8 @@ import {sum} from './module1'
 import {sub} from './module2'
 //引入外部的json文件
 import data from '../json/data.json'
+//引入less样式文件
+import '../css/index.less'
 
 setTimeout(()=>{
    console.log(1)
