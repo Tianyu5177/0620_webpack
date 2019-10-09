@@ -7,6 +7,8 @@
 
 //引入path模块，用于解决路径问题
 const {resolve} = require('path');
+//引入html-webpack-plugin，用于创建html文件
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 //webpack的配置文件，使用CommonJs语法暴露出去一个对象
 module.exports = {
@@ -77,14 +79,42 @@ module.exports = {
             loader: 'url-loader',
             options: {
               outputPath: 'images', //输出图片的位置
-              publicPath: '../dist/images', //控制css引入图片的路径
+              publicPath: '/images', //控制css引入图片的路径
               name: '[hash:5].[ext]', // 修改文件名称 [hash:8] hash值取8位  [ext] 文件扩展名
               limit: 8192 // 如果图片小于8KB则转为base64
             },
           },
         ],
       },
+      //使用html-loader，处理html文件中的img标签
+      {
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader'
+        }
+      },
+      //使用file-loader解决其他文件资源的引入问题
+      {
+        test: /\.(eot|svg|woff|woff2|ttf|mp3|mp4|avi)$/,  // 处理其他资源
+        loader: 'file-loader',
+        options: {
+          outputPath: 'font',
+          name: '[hash:5].[ext]'
+        }
+      }
     ]
+  },
+  plugins: [
+    //实例化一个HtmlWebpackPlugin
+    new HtmlWebpackPlugin({
+      template: './src/index.html', // 以指定文件为模板创建新的HtML(1. 结构和原来一样 2. 会自动引入打包的资源)
+    })
+  ],
+  stats:{children: false}, //解决使用HtmlWebpackPlugin插件时多余提示的问题
+  devServer: {
+    open: true, // 自动打开浏览器
+    compress: true, // 启动gzip压缩
+    port: 3000, // 端口号
   }
 };
 

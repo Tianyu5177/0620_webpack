@@ -12,7 +12,10 @@ import {sub} from './module2'
 import data from '../json/data.json'
 //引入less样式文件
 import '../css/index.less'
+import '../css/iconfont.less'
 
+
+console.log('90000000000')
 setTimeout(()=>{
    console.log(1)
 },1000)
