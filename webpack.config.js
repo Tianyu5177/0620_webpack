@@ -18,15 +18,15 @@ module.exports = {
   },*/
   //配置webpack的输出位置
   output: {
-    path: resolve(__dirname, 'dist/js/'), //输出位置
-    filename: 'app.js', //文件名
+    path: resolve(__dirname, 'dist'), //输出位置
+    filename: './js/app.js', //文件名
   },
   mode:'development', //模式的选择
   //所有的loader都要配置在module对象里的rules里
   module: {
     //所有的loader都要配置在这里,loader下载后直接声明使用即可，无需引入。
     rules: [
-      //编译less
+      //编译less为style样式
       {
         test: /\.less$/,//匹配所有.less文件
         //use里的多个loader，“干活”的顺序是：从右到左的顺序
@@ -57,7 +57,7 @@ module.exports = {
                 '@babel/preset-env',
                 {
                   useBuiltIns: 'usage',  // 按需引入需要使用polyfill
-                  corejs: { version: 3 }, // 解决warn
+                  corejs: { version: 3 }, // 解决一个报错的问题
                   targets: { // 指定兼容性处理哪些浏览器
                     "chrome": "75",
                     "ie": "11",
@@ -68,6 +68,21 @@ module.exports = {
             cacheDirectory: true, // 开启babel缓存
           }
         }
+      },
+      //使用url-loader处理less文件中的图片资源
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              outputPath: 'images', //输出图片的位置
+              publicPath: '../dist/images', //控制css引入图片的路径
+              name: '[hash:5].[ext]', // 修改文件名称 [hash:8] hash值取8位  [ext] 文件扩展名
+              limit: 8192 // 如果图片小于8KB则转为base64
+            },
+          },
+        ],
       },
     ]
   }
