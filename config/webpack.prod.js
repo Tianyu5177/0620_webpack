@@ -12,6 +12,10 @@ const {resolve} = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 //引入CleanWebpackPlugin，用于清空dist文件夹
 const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // 注意要解构赋值！！！
+//引入mini-css-extract-plugin，用于提取css为单独文件
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+//引入'optimize-css-assets-webpack-plugin，压缩css
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 //webpack的配置文件，使用CommonJs语法暴露出去一个对象
 module.exports = {
@@ -34,12 +38,28 @@ module.exports = {
     rules: [
       //编译less为style样式
       {
-        test: /\.less$/,//匹配所有.less文件
-        //use里的多个loader，“干活”的顺序是：从右到左的顺序
+        test: /\.less$/,
         use: [
-          'style-loader', // 根据css模块动态的生成一个style标签，将样式嵌入进去
-          'css-loader', // 将css翻译成一个CommonJs的模块
-          'less-loader' // 将less转换为css
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss',
+              plugins: () => [
+                require('postcss-flexbugs-fixes'),
+                require('postcss-preset-env')({
+                  autoprefixer: {
+                    flexbox: 'no-2009',
+                  },
+                  stage: 3,
+                }),
+                require('postcss-normalize')(),
+              ],
+              sourceMap: true,
+            },
+          },
+          'less-loader',
         ]
       },
       //使用eslint检查js语法
@@ -105,23 +125,44 @@ module.exports = {
           outputPath: 'font',
           name: '[hash:5].[ext]'
         }
-      }
+      },
+
     ]
   },
   plugins: [
     //实例化一个HtmlWebpackPlugin
     new HtmlWebpackPlugin({
       template: './src/index.html', // 以指定文件为模板创建新的HtML(1. 结构和原来一样 2. 会自动引入打包的资源)
+      minify: {
+        removeComments: true, //移除注释
+        collapseWhitespace: true, //移除空格
+        removeRedundantAttributes: true, //移除无用的标签
+        useShortDoctype: true,//使用精简版文档声明
+        removeEmptyAttributes: true,//移除那些没有赋值的属性
+        removeStyleLinkTypeAttributes: true,//移除type
+        keepClosingSlash: true,//移除字自结束标签最后的/
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      }
     }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "css/[name].css",
+    }),
+    new OptimizeCssAssetsPlugin({
+      cssProcessorPluginOptions: {
+        preset: ['default', { discardComments: { removeAll: true } }],
+      },
+      cssProcessorOptions: { // 解决没有source map问题
+        map: {
+          inline: false,
+          annotation: true,
+        }
+      }
+    })
   ],
   stats:{children: false}, //解决使用HtmlWebpackPlugin插件时多余提示的问题
-  devServer: {
-    open: true, // 自动打开浏览器
-    compress: true, // 启动gzip压缩
-    port: 3000, // 端口号
-    hot: true // 开启热模替换功能 HMR
-  },
-  devtool:'cheap-module-source-map'
+  devtool:'cheap-module-source-map',
 };
 
