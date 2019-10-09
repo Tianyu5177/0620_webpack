@@ -14,7 +14,6 @@ import data from '../json/data.json'
 import '../css/index.less'
 import '../css/iconfont.less'
 
-
 console.log('90000000000')
 setTimeout(()=>{
    console.log(1)
@@ -29,6 +28,8 @@ console.log(myPromise)
 myPromise.then(()=>{
     console.log('promise实例的状态变成了成功的')
 })
+
+
 
 console.log(data)
 

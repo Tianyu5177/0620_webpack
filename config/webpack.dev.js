@@ -1,4 +1,5 @@
 /*
+*  该配配置文件是给：开发环境用的
 * 本js文件是webpack的核心配置文件，
 *   1.里面所配置的是：所有webpack要去做的“任务”，该文件不可随意更改名字。
 *   2.所有的配置文件，都必须按照官方要求去写。
@@ -13,7 +14,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 //webpack的配置文件，使用CommonJs语法暴露出去一个对象
 module.exports = {
   //配置入口文件所在的位置
-  entry: './src/js/app.js',
+  entry: ['./src/js/app.js','./src/index.html'],
   //entry还可以按照如下方式编写
   /*entry: {
     haha: './src/js/app.js'
@@ -115,6 +116,8 @@ module.exports = {
     open: true, // 自动打开浏览器
     compress: true, // 启动gzip压缩
     port: 3000, // 端口号
-  }
+    hot: true // 开启热模替换功能 HMR
+  },
+  devtool:'cheap-module-eval-source-map'
 };
 
